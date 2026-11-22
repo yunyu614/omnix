@@ -1665,7 +1665,7 @@ const LEGAL = `侵权与内容说明
 
 document.getElementById("btn-terms").onclick = ()=> showSheet("用户协议", TERMS);
 document.getElementById("btn-legal").onclick = ()=> showSheet("侵权与免责说明", LEGAL);
-document.getElementById("gh-link").onclick = ()=> A.openUrl("https://github.com/yunyu614/modrepo");
+document.getElementById("gh-link").onclick = ()=> A.openUrl("https://github.com/yunyu614/omnix");
 
 /* 清空下载历史（可选是否删本地文件） */
 (function bindClear(){
