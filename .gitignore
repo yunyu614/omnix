@@ -1,0 +1,13 @@
+# 构建产物
+build/
+out/
+# 工具与密钥（不入库）
+tools/*.jar
+tools/fonts/
+keystore/*.jks
+# 本机凭据
+.gh-token
+.gh-user
+# 日志与临时
+*.log
+xa*

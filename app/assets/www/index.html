@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="mist" data-mode="day">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Omnix</title>
+<link rel="stylesheet" href="themes.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="veil"></div>
+
+<header class="top">
+  <div class="top-l">
+    <h1 id="pg-title">首页</h1>
+    <p id="pg-sub">Root 环境与设备概览</p>
+  </div>
+  <button class="pill" id="dl-pill" style="display:none">
+    <svg class="dl-svg" viewBox="0 0 24 24"><path d="M12 3.5v10.5M7.5 10L12 14.5 16.5 10M5 19h14"/></svg>
+    <span id="dl-pill-txt">下载中</span><b id="dl-badge" style="display:none">0</b>
+  </button>
+</header>
+
+<main id="scroll">
+
+  <!-- 首页 -->
+  <section class="page on" id="p-home">
+    <div class="glass hero" id="root-card">
+      <div class="hero-top">
+        <div class="mgr-ico" id="mgr-ico">
+          <img id="mgr-icon" alt="" style="display:none">
+          <svg id="mgr-fallback" viewBox="0 0 24 24" style="display:none">
+            <path d="M12 3l7 3v6c0 4.2-2.9 7.6-7 9-4.1-1.4-7-4.8-7-9V6z"/>
+          </svg>
+          <i class="dot" id="mgr-dot"></i>
+        </div>
+        <div class="hero-info">
+          <div class="k-row"><span class="lbl">Root 实现</span><b id="e-mgr">检测中…</b></div>
+          <div class="k-row"><span class="lbl">版本</span><b id="e-mgrver">—</b></div>
+          <div class="k-row"><span class="lbl">SELinux</span><b id="e-selinux">—</b></div>
+        </div>
+      </div>
+      <div class="chips" id="env-chips"></div>
+    </div>
+
+    <div class="mcounts">
+      <div class="glass mcount" data-kind="root">
+        <div class="mc-l"><b id="mc-root">—</b><span>Root 模块</span></div>
+        <div class="mc-r">›</div>
+      </div>
+      <div class="glass mcount" data-kind="xposed">
+        <div class="mc-l"><b id="mc-xp">—</b><span>Xposed 模块</span></div>
+        <div class="mc-r">›</div>
+      </div>
+    </div>
+
+    <h2 class="sec">设备信息 <span class="tag" id="dev-more">查看详情 ›</span></h2>
+    <div class="glass grid" id="dev-grid">
+      <div><span class="lbl">型号</span><b id="d-model">—</b></div>
+      <div><span class="lbl">系统</span><b id="d-android">—</b></div>
+      <div><span class="lbl">内核</span><b id="d-kernel">—</b></div>
+      <div><span class="lbl">架构</span><b id="d-abi">—</b></div>
+      <div><span class="lbl">内存</span><b id="d-ram">—</b></div>
+      <div><span class="lbl">分辨率</span><b id="d-screen">—</b></div>
+      <div class="wide"><span class="lbl">处理器</span><b id="d-cpu">—</b></div>
+      <div class="wide"><span class="lbl">系统版本号</span><b id="d-rom">—</b></div>
+    </div>
+  </section>
+
+  <!-- 设备详情 -->
+  <section class="page" id="p-dev">
+    <div class="sub-head">
+      <button class="back" data-back><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h2>设备详情</h2>
+    </div>
+    <div id="dev-body"><div class="glass card"><div class="empty">读取中…</div></div></div>
+  </section>
+
+  <!-- 模块 -->
+  <section class="page" id="p-mod">
+    <div class="srcseg" id="seg-tab">
+      <button data-v="mod" class="on">模块</button>
+      <button data-v="lsp">LSP 模块</button>
+    </div>
+    <div class="searchbar">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="q-mod" placeholder="搜索模块 / 作者 / 包名">
+    </div>
+    <div class="chips scroll" id="sort-mod">
+      <button class="chip on" data-s="all">全部</button>
+      <button class="chip" data-s="hot">热门</button>
+      <button class="chip" data-s="new">最新</button>
+    </div>
+    <div class="src-line"><span id="src-line">—</span><em class="tag" id="src-total">—</em></div>
+    <div class="list" id="mod-list"></div>
+    <button class="btn wide" id="more-btn" style="display:none;margin:10px 0 0">加载更多</button>
+  </section>
+
+  <!-- 已安装模块 -->
+  <section class="page" id="p-modules">
+    <div class="sub-head">
+      <button class="back" data-back><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h2>已安装模块</h2><span class="cnt" id="mods-cnt"></span>
+    </div>
+
+    <div class="list" id="mods-list"><div class="glass card"><div class="empty">读取中…</div></div></div>
+  </section>
+
+  <!-- 下载器 -->
+  <section class="page" id="p-dl">
+    <h2 class="sec first">正在下载</h2>
+    <div id="dl-active"><div class="glass card"><div class="empty">没有正在进行的下载</div></div></div>
+    <h2 class="sec">历史记录 <span class="tag" id="dl-clear">清空</span></h2>
+    <div id="dl-history" class="list"></div>
+  </section>
+
+  <!-- 模块详情 -->
+  <section class="page" id="p-mdetail">
+    <div class="sub-head">
+      <button class="back" data-back><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h2 id="md-title">模块</h2>
+    </div>
+    <div class="glass card md-head" id="md-head"></div>
+    <div class="glass card">
+      <h2 class="sec first" style="margin-top:0">简介</h2>
+      <p class="md-desc" id="md-desc">—</p>
+      <div class="md-row">
+        <button class="btn sm ghost" id="md-tr">翻译成中文</button>
+        <button class="btn sm ghost" id="md-copy">复制原文</button>
+      </div>
+      <div class="tr-block hidden" id="md-trout"></div>
+    </div>
+    <div class="glass card" id="md-meta"></div>
+    <div class="md-actions">
+      <button class="btn" id="md-dl">下载 / 安装</button>
+      <button class="btn ghost" id="md-gh">打开页面</button>
+    </div>
+  </section>
+
+  <!-- 多功能 -->
+  <section class="page" id="p-tools">
+    <div class="tools" id="tool-grid"></div>
+  </section>
+
+  <!-- 管理器收录 -->
+  <section class="page" id="p-mgr">
+    <div class="sub-head">
+      <button class="back" data-back><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h2>管理器收录</h2><span class="cnt" id="mgr-cnt"></span>
+    </div>
+    <div id="mgr-list"></div>
+  </section>
+
+  <!-- 应用冻结 -->
+  <section class="page" id="p-apps">
+    <div class="sub-head">
+      <button class="back" data-back><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h2>应用冻结 / 启用</h2><span class="cnt" id="app-cnt"></span>
+    </div>
+    <div class="chips scroll" id="seg-app">
+      <button class="chip on" data-v="all">全部</button>
+      <button class="chip" data-v="user">用户应用</button>
+      <button class="chip" data-v="sys">系统应用</button>
+    </div>
+    <div class="searchbar">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="q-app" placeholder="搜索应用名 / 包名">
+    </div>
+    <div class="list" id="app-list"><div class="glass card"><div class="empty">读取中…</div></div></div>
+  </section>
+
+  <!-- 电池 -->
+  <section class="page" id="p-part">
+    <div class="sub-head">
+      <button class="back" data-back><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h2>镜像分区</h2><span class="cnt" id="part-cnt"></span>
+    </div>
+    <p class="note" style="margin:0 4px 10px">导出：把分区镜像 dd 到 Download/ModRepo/partitions/；刷入：选择 .img 写回分区（高危，请确认镜像与分区匹配）。</p>
+    <div class="list" id="part-list"><div class="glass card"><div class="empty">读取中…</div></div></div>
+  </section>
+
+  <!-- 模块详情 -->
+  <section class="page" id="p-mdet">
+    <div class="sub-head">
+      <button class="back" data-back><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h2 id="md-title2">模块</h2>
+    </div>
+    <div class="glass card">
+      <div class="kv"><span class="lbl">模块名</span><b id="md-n">—</b></div>
+      <div class="kv"><span class="lbl">版本</span><b id="md-v">—</b></div>
+      <div class="kv"><span class="lbl">大小</span><b id="md-s">—</b></div>
+      <div class="kv"><span class="lbl">类型</span><b id="md-k">—</b></div>
+    </div>
+    <div class="glass card">
+      <h2 class="sec first" style="margin-top:0">模块介绍</h2>
+      <p class="md-desc" id="md-d2">—</p>
+    </div>
+    <div class="md-actions" id="md-acts"></div>
+  </section>
+
+  <!-- 应用备份 -->
+  <section class="page" id="p-appbackup">
+    <div class="sub-head">
+      <button class="back" data-back><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h2>应用备份</h2><span class="cnt" id="ab-cnt">—</span>
+    </div>
+    <div class="chips scroll" id="seg-ab">
+      <button class="chip on" data-v="all">全部</button>
+      <button class="chip" data-v="user">用户应用</button>
+      <button class="chip" data-v="sys">系统应用</button>
+    </div>
+    <div class="searchbar">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="q-ab" placeholder="搜索应用名 / 包名">
+    </div>
+    <div class="chips scroll">
+      <button class="chip" id="ab-all">全选当前</button>
+      <button class="chip" id="ab-none">清空</button>
+      <button class="chip" id="ab-sel" style="pointer-events:none">已选 0</button>
+    </div>
+    <div class="list" id="ab-list"><div class="glass card"><div class="empty">读取中…</div></div></div>
+    <button class="btn wide" id="ab-export" style="margin:10px 0 0">导出所选安装包</button>
+  </section>
+
+  <!-- 字库备份 -->
+  <section class="page" id="p-font">
+    <div class="sub-head">
+      <button class="back" data-back><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h2>字库备份</h2>
+    </div>
+    <div class="glass card">
+      <div class="set-row">
+        <div class="set-l"><b>关键数据备份</b><span class="lbl">persist / modemst1·2 / fsg / fsc / nvram / nvdata / modem / misc / dtbo / vbmeta</span></div>
+        <em class="ver" id="est-key">预估 —</em>
+      </div>
+      <div class="set-row">
+        <div class="set-l"><b>完整备份</b><span class="lbl">除 userdata / super 等大分区外的全部分区</span></div>
+        <em class="ver" id="est-full">预估 —</em>
+      </div>
+      <div class="md-row" style="margin-top:12px">
+        <button class="btn sm" id="btn-font-key">备份关键数据</button>
+        <button class="btn sm ghost" id="btn-font-full">完整备份</button>
+      </div>
+      <p class="note">保存到 Download/ModRepo/font-store/{key|full}/&lt;时间戳&gt;/。完整备份体积较大，确认剩余空间充足。</p>
+    </div>
+    <div id="font-out"></div>
+  </section>
+
+  <!-- 应用收录 -->
+  <section class="page" id="p-appcat">
+    <div class="sub-head">
+      <button class="back" data-back><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h2>应用收录</h2><span class="cnt" id="appcat-cnt"></span>
+    </div>
+    <div class="list" id="appcat-list"></div>
+  </section>
+
+  <!-- 状态监控 -->
+  <!-- 充电控制 -->
+  <!-- 机型伪装 -->
+  <section class="page" id="p-spoof">
+    <div class="sub-head">
+      <button class="back" data-back><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h2>机型伪装</h2><span class="cnt" id="sp-cnt">—</span>
+    </div>
+
+    <div class="glass card">
+      <div class="kv"><span class="lbl">状态</span><b id="sp-state">读取中…</b></div>
+      <div class="kv"><span class="lbl">当前机型</span><b id="sp-cur">—</b></div>
+      <div class="md-row" style="margin-top:10px">
+        <button class="btn sm" id="sp-apply" style="flex:1">应用伪装</button>
+        <button class="btn sm ghost" id="sp-restore" style="flex:1">还原原始</button>
+      </div>
+    </div>
+
+    <h2 class="sec">预设机型</h2>
+    <div id="sp-presets" class="list"></div>
+
+    <h2 class="sec">伪装参数（可编辑）</h2>
+    <div id="sp-fields" class="glass card"></div>
+    <p class="note" style="margin:10px 4px 0">通过 resetprop 写入系统属性，重启后失效；伪装只影响读取系统属性的检测，不会改变真实硬件。修改前会自动备份原始值，可随时还原。</p>
+  </section>
+
+  <!-- 功耗中心 -->
+  <!-- 温控 -->
+  <!-- 状态监控 -->
+  <!-- 充电控制 -->
+  <section class="page" id="p-perms">
+    <div class="sub-head">
+      <button class="back" data-back><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h2>权限管理</h2><span class="cnt" id="perm-cnt">—</span>
+    </div>
+    <p class="note" style="margin:0 4px 10px">点「去设置」会跳到对应的系统页面，授予后返回本页会自动刷新状态。</p>
+    <div id="perm-list" class="list"></div>
+  </section>
+
+  <!-- 打赏与交流群 -->
+  <section class="page" id="p-support">
+    <div class="sub-head">
+      <button class="back" data-back><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h2>打赏与交流群</h2>
+    </div>
+    <div class="glass qr-card">
+      <img src="img/pay.png" alt="支付宝赞赏码">
+      <div class="qt">支付宝赞赏 · ¥5</div>
+      <div class="qs">固定金额 5 元，纯自愿，不影响任何功能<br>感谢支持 Omnix 的持续更新</div>
+    </div>
+    <div class="glass qr-card">
+      <img src="img/group.png" alt="QQ 交流群二维码">
+      <div class="qt">QQ 交流群 · 1137331073</div>
+      <div class="qs">扫码或点下方按钮进群，问题反馈、版本内测都在群里</div>
+      <div class="md-row" style="width:100%">
+        <button class="btn sm ghost" id="btn-copy-group" style="flex:1">复制群号</button>
+        <button class="btn sm" id="btn-open-group" style="flex:1">打开 QQ 加群</button>
+      </div>
+    </div>
+    <p class="foot">赞赏为自愿行为，不构成任何服务承诺。</p>
+  </section>
+
+  <!-- 订阅与备份 -->
+  <section class="page" id="p-datamgr">
+    <div class="sub-head">
+      <button class="back" data-back><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h2>订阅与备份</h2>
+    </div>
+
+    <h2 class="sec first">我的订阅源</h2>
+    <div class="glass card">
+      <div class="set-row">
+        <div class="set-l"><b>自定义源</b><span class="lbl">添加 GitHub 仓库或 JSON 索引作为额外模块源</span></div>
+        <button class="btn sm" id="add-sub">＋ 添加</button>
+      </div>
+      <div id="sub-list" class="subs"></div>
+      <p class="note">仅保存在本机，可随备份一起导出。</p>
+    </div>
+
+    <h2 class="sec">配置备份</h2>
+    <div class="glass card">
+      <div class="set-row">
+        <div class="set-l"><b>备份导出</b><span class="lbl">主题、订阅与开关打包为 JSON</span></div>
+        <button class="btn sm" id="btn-export">导出</button>
+      </div>
+      <div class="set-row">
+        <div class="set-l"><b>导入恢复</b><span class="lbl">从备份文件还原全部配置</span></div>
+        <button class="btn sm ghost" id="btn-import">导入</button>
+      </div>
+      <p class="note">导出位置：Download/ModRepo/Omnix-backup-时间.json</p>
+    </div>
+  </section>
+
+  <!-- 设置 -->
+  <section class="page" id="p-set">
+    <div class="glass card">
+      <div class="set-row"><div class="set-l"><b>深浅模式</b><span class="lbl">默认日间，可跟随系统</span></div></div>
+      <div class="seg" id="seg-mode">
+        <button data-v="day">日间</button><button data-v="night">夜间</button><button data-v="auto">跟随系统</button>
+      </div>
+      <div class="set-row mt"><div class="set-l"><b>主题配色</b><span class="lbl">整页底色、卡片玻璃与图标一起变化</span></div></div>
+      <div class="themes" id="theme-grid"></div>
+      <div class="set-row mt"><div class="set-l"><b>底栏</b><span class="lbl">悬浮胶囊或贴底停靠</span></div></div>
+      <div class="seg" id="seg-bar"><button data-v="float">悬浮</button><button data-v="dock">停靠</button></div>
+    </div>
+
+    <h2 class="sec">翻译</h2>
+    <div class="glass card">
+      <div class="set-row"><div class="set-l"><b>翻译渠道</b><span class="lbl">国内直连腾讯交互翻译，国外走 Google</span></div></div>
+      <div class="seg" id="seg-tr">
+        <button data-v="auto">自动</button><button data-v="cn">国内</button><button data-v="intl">国外</button>
+      </div>
+      <p class="note">自动模式会依次尝试国内与国外线路，任一条通即返回。</p>
+    </div>
+
+    <h2 class="sec">关于</h2>
+    <div class="glass card about">
+      <div class="link-row"><span>应用</span><b>Omnix · 奥米</b></div>
+      <div class="link-row"><span>版本号</span><b id="ab-ver">4.1.1</b></div>
+      <div class="link-row"><span>作者</span><b>连灿</b></div>
+      <button class="link-row" id="btn-perms"><span>权限管理</span><em>›</em></button>
+      <button class="link-row" id="btn-support"><span>打赏与交流群</span><em>›</em></button>
+      <button class="link-row" id="gh-link"><span>GitHub 项目</span><em>›</em></button>
+      <button class="link-row" id="btn-terms"><span>用户协议</span><em>›</em></button>
+      <button class="link-row" id="btn-legal"><span>侵权与免责说明</span><em>›</em></button>
+    </div>
+  </section>
+</main>
+
+<nav id="nav" class="float">
+  <button data-p="home" class="on"><svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5"/><path d="M6 9.8V20h12V9.8"/></svg><span>首页</span></button>
+  <button data-p="mod"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>模块</span></button>
+  <button data-p="tools"><svg viewBox="0 0 24 24"><path d="M14 4l6 6-4 4-6-6z"/><path d="M4 14l6 6M4 20l4-4"/></svg><span>多功能</span></button>
+  <button data-p="set"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19"/></svg><span>设置</span></button>
+</nav>
+
+<div id="sheet" class="hidden">
+  <div class="sheet-card">
+    <div class="sheet-head"><b id="sheet-title"></b><button id="sheet-x">✕</button></div>
+    <div id="sheet-body" class="sheet-body"></div>
+    <div class="sheet-act" id="sheet-act"></div>
+  </div>
+</div>
+
+<div id="welcome" class="hidden">
+  <div class="sheet-card">
+    <h2>欢迎使用 ModRepo</h2>
+    <p class="wb">本应用用于浏览与安装 Android 模块（KernelSU / LSPosed 等）。</p>
+    <p class="wb"><b>刷入模块属于高危操作</b>，可能导致系统异常、数据丢失或设备无法开机。请在理解后果的前提下使用，并提前备份。</p>
+    <p class="wb">因使用本应用造成的任何直接或间接损失，由使用者自行承担。</p>
+    <button class="btn full" id="welcome-ok">我已阅读并同意</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
