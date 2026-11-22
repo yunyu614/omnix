@@ -91,6 +91,21 @@ python3 tools/gen_icon_omnix.py  # 8 套主题图标（纯色底 + 玻璃质感�
 
 应用不联网上传任何数据；订阅源与配置只保存在本机。
 
+
+## 打赏与交流
+
+### 支付宝赞赏（固定 ¥5）
+纯自愿，不影响任何功能。
+
+<img src="app/assets/www/img/pay.png" width="200" alt="支付宝赞赏码">
+
+### QQ 交流群
+群号：**1137331073** · [点此加群](https://qm.qq.com/q/moshovKCSk)
+
+<img src="app/assets/www/img/group.png" width="200" alt="QQ 群二维码">
+
+群内提供：问题反馈、版本内测、使用交流。提问前请先看群公告与 README。
+
 ## 免责声明
 
 - 本应用是本地工具，不生产、不托管、不修改任何模块文件，模块内容由第三方作者负责。
