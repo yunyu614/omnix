@@ -11,3 +11,5 @@ keystore/*.jks
 # 日志与临时
 *.log
 xa*
+__pycache__/
+*.pyc
